@@ -21,7 +21,7 @@ addons:
   sonarcloud:
     organization: "william-billaud-github"
   artifacts:
-    s3_region: $AWS_DEFAULT_REGION
+    s3_region: "eu-west-1" 
     paths:
       - ./rapport
 env :
