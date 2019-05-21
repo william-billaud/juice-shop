@@ -37,9 +37,12 @@ after_success:
 #  - npm install --production
 #  - npm run package
    - sonar-scanner  -Dsonar.projectKey=3r1co_juice-shop -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.javascript.lcov.reportPaths=./build/reports/coverage/server-tests/lcov.info
-  - pip install --user awscli
-  - docker build  -t $DOCKER_IMAGE_NAME .
-  - eval $(aws ecr get-login --region eu-west-1 --no-include-email)
-  - docker push $DOCKER_IMAGE_NAME
-  - aws cloudformation deploy --template-file ./ecs-task.yaml --stack-name juice-shop --region eu-west-1 --parameter-override ImageName=$DOCKER_IMAGE_NAME
-  - aws cloudformation update-stack --stack-name juice-shop --template-body file://ecs-task.yaml --region eu-west-1 --parameters "ParameterKey=ImageName,ParameterValue=$DOCKER_IMAGE_NAME"
+   - wget https://bintray.com/jeremy-long/owasp/download_file?file_path=dependency-check-5.0.0-M3-release.zip -O depcheck.zip
+   - unzip depcheck.zip
+   - sh dependency-check/bin/dependency-check.sh -s .
+#  - pip install --user awscli
+#  - docker build  -t $DOCKER_IMAGE_NAME .
+#  - eval $(aws ecr get-login --region eu-west-1 --no-include-email)
+#  - docker push $DOCKER_IMAGE_NAME
+#  - aws cloudformation deploy --template-file ./ecs-task.yaml --stack-name juice-shop --region eu-west-1 --parameter-override ImageName=$DOCKER_IMAGE_NAME
+#  - aws cliioudformation update-stack --stack-name juice-shop --template-body file://ecs-task.yaml --region eu-west0 --parameters "ParameterKey=ImageName,ParameterValue=$DOCKER_IMAGE_NAME"
