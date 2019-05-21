@@ -20,6 +20,10 @@ service :
 addons:
   sonarcloud:
     organization: "william-billaud-github"
+  artifacts:
+    s3_region: $AWS_DEFAULT_REGION
+    paths:
+      - ./rapport
 env :
   - DOCKER_IMAGE_NAME=938788377650.dkr.ecr.eu-west-1.amazonaws.com/juice-shop:1.0-$TRAVIS_BUILD_NUMBER
 
@@ -36,10 +40,10 @@ after_success:
 #  - rm -rf frontend/node_modules
 #  - npm install --production
 #  - npm run package
-   - sonar-scanner  -Dsonar.projectKey=3r1co_juice-shop -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.javascript.lcov.reportPaths=./build/reports/coverage/server-tests/lcov.info
+#  - sonar-scanner  -Dsonar.projectKey=3r1co_juice-shop -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.javascript.lcov.reportPaths=./build/reports/coverage/server-tests/lcov.info
    - wget https://bintray.com/jeremy-long/owasp/download_file?file_path=dependency-check-5.0.0-M3-release.zip -O depcheck.zip
    - unzip depcheck.zip
-   - sh dependency-check/bin/dependency-check.sh -s .
+   - sh dependency-check/bin/dependency-check.sh -s . --out rapport
 #  - pip install --user awscli
 #  - docker build  -t $DOCKER_IMAGE_NAME .
 #  - eval $(aws ecr get-login --region eu-west-1 --no-include-email)
