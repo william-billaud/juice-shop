@@ -26,7 +26,7 @@ after_success:
   - rm -rf node_modules
   - rm -rf frontend/node_modules
   - npm install --production
-  - npm run packag
+  - npm run package
   - pip install --user awscli
   - docker build  -t william/juice-shop .
   - eval $(aws ecr get-login --region eu-west-1 --no-include-email)

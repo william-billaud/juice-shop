@@ -19,7 +19,7 @@ Resources:
           Memory: "200"
           PortMappings: 
             - 
-              ContainerPort: 8081 
+              ContainerPort: 3000 
               HostPort: 0
   WebApp: 
     Type: AWS::ECS::Service
