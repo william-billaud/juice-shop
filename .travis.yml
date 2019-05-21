@@ -31,5 +31,5 @@ after_success:
   - docker build  -t $DOCKER_IMAGE_NAME .
   - eval $(aws ecr get-login --region eu-west-1 --no-include-email)
   - docker push $DOCKER_IMAGE_NAME
-  - aws cloudformation deploy --template-file ./ecs-task.yaml --stack-name hellonode --region eu-west-1 --parameter-override ImageName=$DOCKER_IMAGE_NAME
-  - aws cloudformation update-stack --stack-name hellonode --template-body file://ecs-task.yaml --region eu-west-1 --parameters "ParameterKey=ImageName,ParameterValue=$DOCKER_IMAGE_NAME"
+  - aws cloudformation deploy --template-file ./ecs-task.yaml --stack-name juice-shop --region eu-west-1 --parameter-override ImageName=$DOCKER_IMAGE_NAME
+  - aws cloudformation update-stack --stack-name juice-shop --template-body file://ecs-task.yaml --region eu-west-1 --parameters "ParameterKey=ImageName,ParameterValue=$DOCKER_IMAGE_NAME"
