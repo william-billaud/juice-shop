@@ -8,6 +8,7 @@ stages:
 #  - e2e
   - deploy
 dist: trusty
+sudo: required
 
 branches:
   except:
@@ -15,8 +16,9 @@ branches:
     - l10n_develop
 service :
   - docker
-addons :
-  sonar_cloud:
+
+addons:
+  sonarcloud:
     organization: "william-billaud-github"
 env :
   - DOCKER_IMAGE_NAME=938788377650.dkr.ecr.eu-west-1.amazonaws.com/juice-shop:1.0-$TRAVIS_BUILD_NUMBER
