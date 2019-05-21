@@ -30,15 +30,13 @@ env :
 #  - npm run package
 #
 #
-script:
-  - sonar-scanner 
-
 
 after_success:
 #  - rm -rf node_modules
 #  - rm -rf frontend/node_modules
 #  - npm install --production
 #  - npm run package
+  - sonar-scanner
   - pip install --user awscli
   - docker build  -t $DOCKER_IMAGE_NAME .
   - eval $(aws ecr get-login --region eu-west-1 --no-include-email)
