@@ -24,6 +24,7 @@ addons:
     s3_region: "eu-west-1" 
     paths:
       - ./rapport
+      - ./report
 env :
   - DOCKER_IMAGE_NAME=938788377650.dkr.ecr.eu-west-1.amazonaws.com/juice-shop:1.0-$TRAVIS_BUILD_NUMBER
 
@@ -34,6 +35,8 @@ env :
 #  - npm run package
 #
 #
+before_install:
+    - sudo apt-get install -y  jq 
 
 after_success:
 #  - rm -rf node_modules
@@ -44,9 +47,13 @@ after_success:
    - wget https://bintray.com/jeremy-long/owasp/download_file?file_path=dependency-check-5.0.0-M3-release.zip -O depcheck.zip
    - unzip depcheck.zip
    - sh dependency-check/bin/dependency-check.sh -s . --out rapport
-#  - pip install --user awscli
-#  - docker build  -t $DOCKER_IMAGE_NAME .
-#  - eval $(aws ecr get-login --region eu-west-1 --no-include-email)
-#  - docker push $DOCKER_IMAGE_NAME
-#  - aws cloudformation deploy --template-file ./ecs-task.yaml --stack-name juice-shop --region eu-west-1 --parameter-override ImageName=$DOCKER_IMAGE_NAME
-#  - aws cliioudformation update-stack --stack-name juice-shop --template-body file://ecs-task.yaml --region eu-west0 --parameters "ParameterKey=ImageName,ParameterValue=$DOCKER_IMAGE_NAME"
+   - pip install --user awscli
+   - docker build  -t $DOCKER_IMAGE_NAME .
+   - eval $(aws ecr get-login --region eu-west-1 --no-include-email)
+   - docker push $DOCKER_IMAGE_NAME
+   - aws cloudformation deploy --template-file ./ecs-task.yaml --stack-name juice-shop --region eu-west-1 --parameter-override ImageName=$DOCKER_IMAGE_NAME
+   - aws cloudformation update-stack --stack-name juice-shop --template-body file://ecs-task.yaml --region eu-west0 --parameters "ParameterKey=ImageName,ParameterValue=$DOCKER_IMAGE_NAME"
+   - sudo mkdir report && sudo chown 1000:1000 report
+   - $(aws ecs list-tasks --cluster ecscluster | jq -r ".taskArns[0]")
+   - export PORT=`aws ecs describe-tasks --cluster ecscluster --task $(aws ecs list-tasks --cluster ecscluster --query "taskArns" --output text) --query tasks[0].containers[0].networkBindings[0].hostPort`
+   - docker run -t -v $(pwd)/report:/zap/wrk/:rw owasp/zap2docker-stable zap-baseline.py -t http://54.229.19.70:$PORT -r testreport.html || true
